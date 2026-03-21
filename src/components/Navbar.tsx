@@ -17,8 +17,8 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border/50">
-      <div className="mx-auto max-w-6xl flex items-center justify-between px-6 h-16">
-        <Link to="/" className="text-xl font-bold tracking-tight text-foreground select-none transition-opacity hover:opacity-80 duration-200">
+      <div className="mx-auto max-w-6xl flex items-center justify-between px-4 sm:px-6 h-14 sm:h-16">
+        <Link to="/" className="text-lg sm:text-xl font-bold tracking-tight text-foreground select-none transition-opacity hover:opacity-80 duration-200">
           Prop<span className="text-primary">AI</span>
         </Link>
 
@@ -47,19 +47,22 @@ const Navbar = () => {
         </nav>
 
         {/* Mobile toggle */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden p-2 rounded-lg hover:bg-muted active:scale-95 transition-all duration-150"
-          aria-label="Toggle menu"
-        >
-          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle />
+          <button
+            onClick={() => setOpen(!open)}
+            className="p-2 rounded-lg hover:bg-muted active:scale-95 transition-all duration-150"
+            aria-label="Toggle menu"
+          >
+            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile nav */}
       {open && (
         <nav className="md:hidden border-t border-border/50 bg-card/95 backdrop-blur-lg animate-slide-up">
-          <div className="flex flex-col px-6 py-4 gap-1">
+          <div className="flex flex-col px-4 sm:px-6 py-3 gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
@@ -75,14 +78,11 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
-            <div className="flex items-center gap-2 mt-2">
-              <ThemeToggle />
-              <Link to="/predict" onClick={() => setOpen(false)} className="flex-1">
-                <Button size="sm" className="w-full">
-                  Get Started
-                </Button>
-              </Link>
-            </div>
+            <Link to="/predict" onClick={() => setOpen(false)} className="mt-2">
+              <Button size="sm" className="w-full">
+                Get Started
+              </Button>
+            </Link>
           </div>
         </nav>
       )}
