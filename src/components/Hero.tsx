@@ -1,30 +1,35 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import heroIllustration from "@/assets/hero-illustration.png";
 
 const Hero = () => {
   return (
     <section className="relative overflow-hidden">
-      <div className="mx-auto max-w-6xl px-6 py-24 md:py-32 lg:py-40">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      {/* Gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-background to-primary/[0.03] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-primary/[0.04] blur-[100px] pointer-events-none" />
+
+      <div className="relative mx-auto max-w-6xl px-6 py-28 md:py-36 lg:py-44">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Text */}
-          <div className="flex flex-col gap-6 text-center lg:text-left">
+          <div className="flex flex-col gap-7 text-center lg:text-left">
             <span
-              className="inline-block self-center lg:self-start px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase opacity-0 animate-fade-up"
+              className="inline-flex items-center gap-1.5 self-center lg:self-start px-3.5 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase opacity-0 animate-fade-up"
               style={{ animationDelay: "0ms" }}
             >
+              <Sparkles className="w-3.5 h-3.5" />
               AI-Powered Estimates
             </span>
             <h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-foreground text-balance opacity-0 animate-fade-up"
-              style={{ animationDelay: "80ms" }}
+              className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold leading-[1.08] tracking-tight text-foreground text-balance opacity-0 animate-fade-up"
+              style={{ animationDelay: "80ms", lineHeight: "1.08" }}
             >
               Predict Property Prices{" "}
               <span className="text-primary">Instantly</span>
             </h1>
             <p
-              className="text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 opacity-0 animate-fade-up"
+              className="text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 leading-relaxed opacity-0 animate-fade-up"
               style={{ animationDelay: "160ms" }}
             >
               Get accurate, data-driven housing price estimations powered by
@@ -35,9 +40,9 @@ const Hero = () => {
               style={{ animationDelay: "240ms" }}
             >
               <Link to="/predict">
-                <Button variant="hero" size="lg">
+                <Button variant="hero" size="lg" className="group">
                   Start Prediction
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <ArrowRight className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:translate-x-0.5" />
                 </Button>
               </Link>
               <Link to="/about">
@@ -56,15 +61,14 @@ const Hero = () => {
             <img
               src={heroIllustration}
               alt="AI property price prediction visualization"
-              className="w-full max-w-md drop-shadow-xl"
+              className="w-full max-w-md drop-shadow-xl hover:drop-shadow-2xl transition-[filter] duration-500"
             />
           </div>
         </div>
       </div>
 
-      {/* Subtle background decoration */}
-      <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-48 -left-48 w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      {/* Decorative dots pattern */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
     </section>
   );
 };

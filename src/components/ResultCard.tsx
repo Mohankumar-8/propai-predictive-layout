@@ -1,4 +1,4 @@
-import { IndianRupee, TrendingUp, Ruler } from "lucide-react";
+import { IndianRupee, TrendingUp, Ruler, CheckCircle2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface ResultCardProps {
@@ -19,28 +19,43 @@ const ResultCard = ({ estimatedPrice, priceRangeLow, priceRangeHigh, area }: Res
   const pricePerSqFt = Math.round(estimatedPrice / area);
 
   return (
-    <Card className="animate-fade-in mt-8 overflow-hidden border-border/40 shadow-md">
-      <div className="h-1 w-full bg-primary" />
+    <Card className="opacity-0 animate-scale-in overflow-hidden border-border/40 shadow-lg">
+      <div className="h-1.5 w-full bg-gradient-to-r from-primary/80 via-primary to-primary/80" />
       <CardContent className="p-6 sm:p-8 space-y-6">
+        {/* Success badge */}
+        <div
+          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold opacity-0 animate-slide-up"
+          style={{ animationDelay: "200ms" }}
+        >
+          <CheckCircle2 className="w-3.5 h-3.5" />
+          Prediction Complete
+        </div>
+
         {/* Estimated Price */}
-        <div className="flex items-start gap-3">
-          <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <div
+          className="flex items-start gap-3 opacity-0 animate-slide-up"
+          style={{ animationDelay: "300ms" }}
+        >
+          <span className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <IndianRupee className="h-5 w-5" />
           </span>
           <div>
             <p className="text-sm font-medium text-muted-foreground">Estimated Price</p>
-            <p className="text-3xl font-bold tracking-tight text-foreground">
+            <p className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
               {formatINR(estimatedPrice)}
             </p>
           </div>
         </div>
 
-        <div className="h-px w-full bg-border" />
+        <div className="h-px w-full bg-border/60" />
 
         <div className="grid sm:grid-cols-2 gap-5">
           {/* Price Range */}
-          <div className="flex items-start gap-3">
-            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground">
+          <div
+            className="flex items-start gap-3 opacity-0 animate-slide-up"
+            style={{ animationDelay: "400ms" }}
+          >
+            <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-muted-foreground">
               <TrendingUp className="h-4 w-4" />
             </span>
             <div>
@@ -52,8 +67,11 @@ const ResultCard = ({ estimatedPrice, priceRangeLow, priceRangeHigh, area }: Res
           </div>
 
           {/* Price per sq ft */}
-          <div className="flex items-start gap-3">
-            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground">
+          <div
+            className="flex items-start gap-3 opacity-0 animate-slide-up"
+            style={{ animationDelay: "500ms" }}
+          >
+            <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-muted-foreground">
               <Ruler className="h-4 w-4" />
             </span>
             <div>
