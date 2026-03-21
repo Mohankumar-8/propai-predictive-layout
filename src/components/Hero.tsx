@@ -64,7 +64,7 @@ const Hero = () => {
 
       {/* Subtle background decoration */}
       <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-48 -left-48 w-[500px] h-[500px] rounded-full bg-primary/3 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-48 -left-48 w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
     </section>
   );
 };
