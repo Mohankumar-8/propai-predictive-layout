@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root,
+  .light {
     --background: 210 20% 98%;
     --foreground: 220 20% 14%;
 
@@ -46,6 +47,48 @@
     --hero-gradient-from: 173 58% 26%;
     --hero-gradient-to: 175 50% 34%;
   }
+
+  .dark {
+    --background: 220 16% 10%;
+    --foreground: 210 20% 92%;
+
+    --card: 220 14% 13%;
+    --card-foreground: 210 20% 92%;
+
+    --popover: 220 14% 13%;
+    --popover-foreground: 210 20% 92%;
+
+    --primary: 173 50% 38%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 12% 18%;
+    --secondary-foreground: 210 16% 80%;
+
+    --muted: 220 12% 16%;
+    --muted-foreground: 215 12% 58%;
+
+    --accent: 173 50% 38%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 12% 20%;
+    --input: 220 12% 20%;
+    --ring: 173 50% 38%;
+
+    --sidebar-background: 220 14% 11%;
+    --sidebar-foreground: 210 16% 80%;
+    --sidebar-primary: 173 50% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 12% 16%;
+    --sidebar-accent-foreground: 210 16% 80%;
+    --sidebar-border: 220 12% 18%;
+    --sidebar-ring: 173 50% 38%;
+
+    --hero-gradient-from: 173 50% 38%;
+    --hero-gradient-to: 175 45% 30%;
+  }
 }
 
 @layer base {
@@ -54,10 +97,15 @@
   }
   html {
     scroll-behavior: smooth;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
   }
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'DM Sans', system-ui, sans-serif;
+    transition: background-color 0.3s ease, color 0.2s ease;
   }
 }
 
