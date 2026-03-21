@@ -67,7 +67,7 @@ interface FieldProps {
 
 const Field = ({ label, icon, error, children }: FieldProps) => (
   <div className="space-y-1.5">
-    <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+    <label className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-foreground">
       <span className="text-muted-foreground">{icon}</span>
       {label}
     </label>
@@ -79,10 +79,10 @@ const Field = ({ label, icon, error, children }: FieldProps) => (
 );
 
 const baseSelect =
-  "w-full h-11 rounded-lg border bg-background px-4 text-sm text-foreground focus:outline-none focus:ring-2 transition-all duration-200 appearance-none cursor-pointer";
+  "w-full h-10 sm:h-11 rounded-lg border bg-background px-3 sm:px-4 text-sm text-foreground focus:outline-none focus:ring-2 transition-all duration-200 appearance-none cursor-pointer";
 
 const baseInput =
-  "w-full h-11 rounded-lg border bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition-all duration-200";
+  "w-full h-10 sm:h-11 rounded-lg border bg-background px-3 sm:px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition-all duration-200";
 
 function fieldClass(hasError: boolean, base: string) {
   return `${base} ${
@@ -144,13 +144,14 @@ const PredictionForm = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <form
         onSubmit={handleSubmit}
         noValidate
-        className="bg-card rounded-2xl border border-border/40 shadow-sm hover:shadow-md transition-shadow duration-300 p-6 sm:p-8 space-y-6"
+        className="bg-card rounded-2xl border border-border/40 shadow-sm hover:shadow-md transition-shadow duration-300 p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6"
       >
-        <div className="grid sm:grid-cols-2 gap-5">
+        {/* Row 1 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           <Field label="Location" icon={<MapPin className="w-3.5 h-3.5" />} error={showError("location")}>
             <select className={fieldClass(!!showError("location"), baseSelect)} value={form.location} onChange={(e) => update("location", e.target.value)} onBlur={() => blur("location")}>
               <option value="" disabled>Select city</option>
@@ -162,7 +163,8 @@ const PredictionForm = () => {
           </Field>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-5">
+        {/* Row 2 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           <Field label="Bedrooms" icon={<BedDouble className="w-3.5 h-3.5" />} error={showError("bedrooms")}>
             <select className={fieldClass(!!showError("bedrooms"), baseSelect)} value={form.bedrooms} onChange={(e) => update("bedrooms", e.target.value)} onBlur={() => blur("bedrooms")}>
               <option value="" disabled>Select</option>
@@ -177,7 +179,8 @@ const PredictionForm = () => {
           </Field>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-5">
+        {/* Row 3 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           <Field label="Parking" icon={<Car className="w-3.5 h-3.5" />} error={showError("parking")}>
             <select className={fieldClass(!!showError("parking"), baseSelect)} value={form.parking} onChange={(e) => update("parking", e.target.value)} onBlur={() => blur("parking")}>
               <option value="" disabled>Select</option>
@@ -192,6 +195,7 @@ const PredictionForm = () => {
           </Field>
         </div>
 
+        {/* Property Type — full width */}
         <Field label="Property Type" icon={<Building2 className="w-3.5 h-3.5" />} error={showError("propertyType")}>
           <select className={fieldClass(!!showError("propertyType"), baseSelect)} value={form.propertyType} onChange={(e) => update("propertyType", e.target.value)} onBlur={() => blur("propertyType")}>
             <option value="" disabled>Select</option>
@@ -200,7 +204,7 @@ const PredictionForm = () => {
         </Field>
 
         {apiError && (
-          <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/5 rounded-lg px-4 py-3 animate-slide-up">
+          <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/5 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 animate-slide-up">
             <span className="w-1.5 h-1.5 rounded-full bg-destructive shrink-0" />
             {apiError}
           </div>
