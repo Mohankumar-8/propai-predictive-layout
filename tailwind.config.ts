@@ -90,3 +90,7 @@ export default {
         "fade-up": "fade-up 0.7s cubic-bezier(0.16,1,0.3,1) forwards",
         "fade-in": "fade-in 0.5s ease-out forwards",
       },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+} satisfies Config;
