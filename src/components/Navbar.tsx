@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const navLinks = [
   { label: "Home", to: "/" },
@@ -37,6 +38,7 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
+          <ThemeToggle />
           <Link to="/predict">
             <Button size="sm" className="ml-3">
               Get Started
@@ -73,11 +75,14 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
-            <Link to="/predict" onClick={() => setOpen(false)}>
-              <Button size="sm" className="w-full mt-2">
-                Get Started
-              </Button>
-            </Link>
+            <div className="flex items-center gap-2 mt-2">
+              <ThemeToggle />
+              <Link to="/predict" onClick={() => setOpen(false)} className="flex-1">
+                <Button size="sm" className="w-full">
+                  Get Started
+                </Button>
+              </Link>
+            </div>
           </div>
         </nav>
       )}
