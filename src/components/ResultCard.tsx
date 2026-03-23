@@ -21,7 +21,7 @@ const ResultCard = ({ estimatedPrice, priceRangeLow, priceRangeHigh, area }: Res
   return (
     <Card className="opacity-0 animate-scale-in overflow-hidden border-border/40 shadow-lg">
       <div className="h-1.5 w-full bg-gradient-to-r from-primary/80 via-primary to-primary/80" />
-      <CardContent className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
+      <CardContent className="p-6 sm:p-8 space-y-6">
         {/* Success badge */}
         <div
           className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold opacity-0 animate-slide-up"
@@ -36,11 +36,11 @@ const ResultCard = ({ estimatedPrice, priceRangeLow, priceRangeHigh, area }: Res
           className="flex items-start gap-3 opacity-0 animate-slide-up"
           style={{ animationDelay: "300ms" }}
         >
-          <span className="mt-1 flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <IndianRupee className="h-4 w-4 sm:h-5 sm:w-5" />
+          <span className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <IndianRupee className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Estimated Price</p>
+            <p className="text-sm font-medium text-muted-foreground">Estimated Price</p>
             <p className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground break-words">
               {formatINR(estimatedPrice)}
             </p>
@@ -49,17 +49,17 @@ const ResultCard = ({ estimatedPrice, priceRangeLow, priceRangeHigh, area }: Res
 
         <div className="h-px w-full bg-border/60" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {/* Price Range */}
           <div
             className="flex items-start gap-3 opacity-0 animate-slide-up"
             style={{ animationDelay: "400ms" }}
           >
-            <span className="mt-0.5 flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-muted-foreground">
-              <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-muted-foreground">
+              <TrendingUp className="h-4 w-4" />
             </span>
             <div className="min-w-0">
-              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Price Range</p>
+              <p className="text-sm font-medium text-muted-foreground">Price Range</p>
               <p className="text-sm sm:text-base font-semibold text-foreground break-words">
                 {formatINR(priceRangeLow)} – {formatINR(priceRangeHigh)}
               </p>
@@ -71,11 +71,11 @@ const ResultCard = ({ estimatedPrice, priceRangeLow, priceRangeHigh, area }: Res
             className="flex items-start gap-3 opacity-0 animate-slide-up"
             style={{ animationDelay: "500ms" }}
           >
-            <span className="mt-0.5 flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-muted-foreground">
-              <Ruler className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-muted-foreground">
+              <Ruler className="h-4 w-4" />
             </span>
             <div className="min-w-0">
-              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Price per sq. ft.</p>
+              <p className="text-sm font-medium text-muted-foreground">Price per sq. ft.</p>
               <p className="text-sm sm:text-base font-semibold text-foreground">
                 {formatINR(pricePerSqFt)}
               </p>

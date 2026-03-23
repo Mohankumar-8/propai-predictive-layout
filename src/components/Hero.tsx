@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
+import Container from "@/components/layout/Container";
 import heroIllustration from "@/assets/hero-illustration.png";
 
 const Hero = () => {
@@ -10,15 +11,15 @@ const Hero = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-background to-primary/[0.03] pointer-events-none" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] sm:w-[800px] h-[400px] sm:h-[600px] rounded-full bg-primary/[0.04] blur-[100px] pointer-events-none" />
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-28 md:py-36 lg:py-44">
-        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20 items-center">
+      <Container className="relative py-20 sm:py-28 md:py-36 lg:py-44">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
           {/* Text */}
-          <div className="flex flex-col gap-5 sm:gap-7 text-center lg:text-left">
+          <div className="flex flex-col gap-6 text-center lg:text-left">
             <span
-              className="inline-flex items-center gap-1.5 self-center lg:self-start px-3 sm:px-3.5 py-1.5 rounded-full bg-primary/10 text-primary text-[11px] sm:text-xs font-semibold tracking-wide uppercase opacity-0 animate-fade-up"
+              className="inline-flex items-center gap-1.5 self-center lg:self-start px-3.5 py-1.5 rounded-full bg-primary/10 text-primary text-[11px] sm:text-xs font-semibold tracking-wide uppercase opacity-0 animate-fade-up"
               style={{ animationDelay: "0ms" }}
             >
-              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <Sparkles className="w-3.5 h-3.5" />
               AI-Powered Estimates
             </span>
             <h1
@@ -55,7 +56,7 @@ const Hero = () => {
 
           {/* Illustration — visible on tablet+ */}
           <div
-            className="hidden sm:flex lg:flex justify-center opacity-0 animate-fade-up"
+            className="hidden sm:flex justify-center opacity-0 animate-fade-up"
             style={{ animationDelay: "320ms" }}
           >
             <img
@@ -65,7 +66,7 @@ const Hero = () => {
             />
           </div>
         </div>
-      </div>
+      </Container>
 
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
     </section>

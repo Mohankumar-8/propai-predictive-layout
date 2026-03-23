@@ -1,5 +1,9 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
+import PageLayout from "@/components/layout/PageLayout";
+import Container from "@/components/layout/Container";
+import Section from "@/components/layout/Section";
+import { Button } from "@/components/ui/button";
 
 const NotFound = () => {
   const location = useLocation();
@@ -9,15 +13,21 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
-        <a href="/" className="text-primary underline hover:text-primary/90">
-          Return to Home
-        </a>
-      </div>
-    </div>
+    <PageLayout>
+      <Section spacing="lg">
+        <Container className="text-center">
+          <h1 className="text-6xl sm:text-8xl font-bold text-primary opacity-0 animate-fade-up">404</h1>
+          <p className="mt-4 text-lg sm:text-xl text-muted-foreground opacity-0 animate-fade-up" style={{ animationDelay: "80ms" }}>
+            Oops! Page not found
+          </p>
+          <div className="mt-8 opacity-0 animate-fade-up" style={{ animationDelay: "160ms" }}>
+            <Link to="/">
+              <Button variant="hero" size="lg">Return to Home</Button>
+            </Link>
+          </div>
+        </Container>
+      </Section>
+    </PageLayout>
   );
 };
 
