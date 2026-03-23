@@ -19,15 +19,15 @@ const ResultCard = ({ estimatedPrice, priceRangeLow, priceRangeHigh, area }: Res
   const pricePerSqFt = Math.round(estimatedPrice / area);
 
   return (
-    <Card className="opacity-0 animate-scale-in overflow-hidden border-border/40 shadow-lg">
-      <div className="h-1.5 w-full bg-gradient-to-r from-primary/80 via-primary to-primary/80" />
+    <Card className="opacity-0 animate-scale-in overflow-hidden border-border/40 shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <div className="h-1.5 w-full bg-gradient-to-r from-primary/80 via-primary to-primary/80 animate-shimmer bg-[length:200%_100%]" />
       <CardContent className="p-6 sm:p-8 space-y-6">
         {/* Success badge */}
         <div
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold opacity-0 animate-slide-up"
+          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold opacity-0 animate-slide-in-right"
           style={{ animationDelay: "200ms" }}
         >
-          <CheckCircle2 className="w-3.5 h-3.5" />
+          <CheckCircle2 className="w-3.5 h-3.5 animate-bounce-subtle" />
           Prediction Complete
         </div>
 

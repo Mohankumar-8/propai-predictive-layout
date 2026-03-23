@@ -79,10 +79,10 @@ const Field = ({ label, icon, error, children }: FieldProps) => (
 );
 
 const baseSelect =
-  "w-full h-11 rounded-lg border bg-background px-4 text-sm text-foreground focus:outline-none focus:ring-2 transition-all duration-200 appearance-none cursor-pointer";
+  "w-full h-11 rounded-lg border bg-background px-4 text-sm text-foreground focus:outline-none focus:ring-2 focus:shadow-sm transition-all duration-200 ease-out appearance-none cursor-pointer hover:shadow-sm";
 
 const baseInput =
-  "w-full h-11 rounded-lg border bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition-all duration-200";
+  "w-full h-11 rounded-lg border bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:shadow-sm transition-all duration-200 ease-out hover:shadow-sm";
 
 function fieldClass(hasError: boolean, base: string) {
   return `${base} ${
