@@ -37,13 +37,13 @@ const Features = () => {
           {features.map((f, i) => (
             <div
               key={f.title}
-              className="group relative bg-card rounded-2xl p-6 sm:p-8 shadow-sm border border-border/40 hover:shadow-lg hover:shadow-primary/[0.06] hover:-translate-y-1 transition-all duration-300 ease-out opacity-0 animate-fade-up"
+              className="group relative bg-card rounded-2xl p-6 sm:p-8 shadow-sm border border-border/40 hover:shadow-lg hover:shadow-primary/[0.06] hover:-translate-y-1.5 hover:border-primary/20 transition-all duration-300 ease-out opacity-0 animate-fade-up cursor-default"
               style={{ animationDelay: `${i * 100 + 200}ms` }}
             >
-              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/15 transition-colors duration-300">
-                <f.icon className="w-5 h-5 text-primary" />
+              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/15 group-hover:scale-110 transition-all duration-300">
+                <f.icon className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-110" />
               </div>
-              <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">
+              <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 transition-colors duration-200 group-hover:text-primary">
                 {f.title}
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
