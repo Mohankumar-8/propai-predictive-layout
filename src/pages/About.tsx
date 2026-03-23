@@ -38,13 +38,13 @@ const About = () => {
             {values.map((v, i) => (
               <div
                 key={v.title}
-                className="text-center bg-card rounded-2xl p-6 border border-border/40 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 opacity-0 animate-fade-up"
+                className="group text-center bg-card rounded-2xl p-6 border border-border/40 shadow-sm hover:shadow-lg hover:shadow-primary/[0.06] hover:-translate-y-1.5 hover:border-primary/20 transition-all duration-300 opacity-0 animate-fade-up cursor-default"
                 style={{ animationDelay: `${i * 100 + 200}ms` }}
               >
-                <div className="mx-auto w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <div className="mx-auto w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 group-hover:scale-110 transition-all duration-300">
                   <v.icon className="w-5 h-5 text-primary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-1.5 text-sm sm:text-base">{v.title}</h3>
+                <h3 className="font-semibold text-foreground mb-1.5 text-sm sm:text-base transition-colors duration-200 group-hover:text-primary">{v.title}</h3>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{v.text}</p>
               </div>
             ))}
