@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Brain, TrendingUp, Shield } from "lucide-react";
 import Container from "@/components/layout/Container";
 import Section from "@/components/layout/Section";
@@ -24,7 +25,7 @@ const features = [
   },
 ];
 
-const Features = () => {
+const Features = memo(() => {
   return (
     <Section className="bg-muted/30">
       <Container>
@@ -55,6 +56,8 @@ const Features = () => {
       </Container>
     </Section>
   );
-};
+});
+
+Features.displayName = "Features";
 
 export default Features;

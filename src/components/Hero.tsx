@@ -1,10 +1,10 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Container from "@/components/layout/Container";
-import heroIllustration from "@/assets/hero-illustration.png";
 
-const Hero = () => {
+const Hero = memo(() => {
   return (
     <section className="relative overflow-hidden">
       {/* Gradient background */}
@@ -60,9 +60,13 @@ const Hero = () => {
             style={{ animationDelay: "320ms" }}
           >
             <img
-              src={heroIllustration}
+              src="/hero-illustration.png"
               alt="AI property price prediction visualization"
               className="w-full max-w-xs sm:max-w-sm lg:max-w-md drop-shadow-xl hover:drop-shadow-2xl transition-[filter] duration-500"
+              loading="lazy"
+              decoding="async"
+              width={400}
+              height={400}
             />
           </div>
         </div>
@@ -71,6 +75,8 @@ const Hero = () => {
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
     </section>
   );
-};
+});
+
+Hero.displayName = "Hero";
 
 export default Hero;
