@@ -9,6 +9,7 @@ import {
   Car,
   Sofa,
   Building2,
+  AlertCircle,
 } from "lucide-react";
 import ResultCard from "@/components/ResultCard";
 
@@ -45,6 +46,13 @@ const fieldLabels: Record<FormKey, string> = {
   propertyType: "Property Type",
 };
 
+const fieldHelpers: Partial<Record<FormKey, string>> = {
+  location: "Select the city where the property is located",
+  area: "Total carpet area of the property",
+  furnishing: "Current furnishing status of the property",
+  propertyType: "Type of residential property",
+};
+
 function validate(form: typeof initialForm): Partial<Record<FormKey, string>> {
   const errors: Partial<Record<FormKey, string>> = {};
   for (const key of Object.keys(form) as FormKey[]) {
@@ -62,41 +70,69 @@ interface FieldProps {
   label: string;
   icon: React.ReactNode;
   error?: string;
+  helper?: string;
   children: React.ReactNode;
 }
 
-const Field = ({ label, icon, error, children }: FieldProps) => (
-  <div className="space-y-2">
+const Field = ({ label, icon, error, helper, children }: FieldProps) => (
+  <div className="space-y-1.5">
     <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-      <span className="text-muted-foreground">{icon}</span>
+      <span className="text-primary/70">{icon}</span>
       {label}
     </label>
     {children}
-    {error && (
-      <p className="text-xs text-destructive animate-slide-up">{error}</p>
-    )}
+    <div className="min-h-[1.25rem]">
+      {error ? (
+        <p className="flex items-center gap-1 text-xs text-destructive animate-slide-up">
+          <AlertCircle className="w-3 h-3 shrink-0" />
+          {error}
+        </p>
+      ) : helper ? (
+        <p className="text-xs text-muted-foreground">{helper}</p>
+      ) : null}
+    </div>
   </div>
 );
 
 const baseSelect =
-  "w-full h-11 rounded-lg border bg-background px-4 text-sm text-foreground focus:outline-none focus:ring-2 focus:shadow-sm transition-all duration-200 ease-out appearance-none cursor-pointer hover:shadow-sm";
+  "w-full h-11 rounded-lg border bg-background pl-10 pr-4 text-sm text-foreground focus:outline-none focus:ring-2 focus:shadow-sm transition-all duration-200 ease-out appearance-none cursor-pointer hover:shadow-sm hover:border-primary/20";
 
 const baseInput =
-  "w-full h-11 rounded-lg border bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:shadow-sm transition-all duration-200 ease-out hover:shadow-sm";
+  "w-full h-11 rounded-lg border bg-background pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:shadow-sm transition-all duration-200 ease-out hover:shadow-sm hover:border-primary/20";
 
 function fieldClass(hasError: boolean, base: string) {
   return `${base} ${
     hasError
       ? "border-destructive focus:ring-destructive/40 focus:border-destructive"
-      : "border-input focus:ring-ring/50 focus:border-primary/30 hover:border-primary/20"
+      : "border-input focus:ring-ring/50 focus:border-primary/30"
   }`;
 }
+
+interface InputWrapperProps {
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}
+
+const InputWrapper = ({ icon, children }: InputWrapperProps) => (
+  <div className="relative">
+    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
+      {icon}
+    </span>
+    {children}
+  </div>
+);
 
 interface PredictionResult {
   predicted_price: number;
   price_range: [number, number];
   price_per_sqft: number;
 }
+
+const fieldGroups: { title: string; fields: FormKey[] }[] = [
+  { title: "Location & Size", fields: ["location", "area"] },
+  { title: "Room Details", fields: ["bedrooms", "bathrooms"] },
+  { title: "Amenities & Type", fields: ["parking", "furnishing", "propertyType"] },
+];
 
 const PredictionForm = () => {
   const [loading, setLoading] = useState(false);
@@ -143,6 +179,33 @@ const PredictionForm = () => {
     }
   };
 
+  const iconMap: Record<FormKey, React.ReactNode> = {
+    location: <MapPin className="w-4 h-4" />,
+    area: <Maximize2 className="w-4 h-4" />,
+    bedrooms: <BedDouble className="w-4 h-4" />,
+    bathrooms: <Bath className="w-4 h-4" />,
+    parking: <Car className="w-4 h-4" />,
+    furnishing: <Sofa className="w-4 h-4" />,
+    propertyType: <Building2 className="w-4 h-4" />,
+  };
+
+  const renderSelect = (key: FormKey, options: string[], placeholder: string) => (
+    <InputWrapper icon={iconMap[key]}>
+      <select
+        className={fieldClass(!!showError(key), baseSelect)}
+        value={form[key]}
+        onChange={(e) => update(key, e.target.value)}
+        onBlur={() => blur(key)}
+      >
+        <option value="" disabled>{placeholder}</option>
+        {options.map((o) => <option key={o} value={o}>{o}</option>)}
+      </select>
+    </InputWrapper>
+  );
+
+  const filledCount = Object.values(form).filter((v) => v.trim()).length;
+  const totalFields = Object.keys(form).length;
+
   return (
     <div className="space-y-8">
       <form
@@ -150,62 +213,86 @@ const PredictionForm = () => {
         noValidate
         className="bg-card rounded-2xl border border-border/40 shadow-sm hover:shadow-md transition-shadow duration-300 p-6 sm:p-8 space-y-6"
       >
-        {/* Row 1 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <Field label="Location" icon={<MapPin className="w-3.5 h-3.5" />} error={showError("location")}>
-            <select className={fieldClass(!!showError("location"), baseSelect)} value={form.location} onChange={(e) => update("location", e.target.value)} onBlur={() => blur("location")}>
-              <option value="" disabled>Select city</option>
-              {cities.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </Field>
-          <Field label="Area (sq. ft.)" icon={<Maximize2 className="w-3.5 h-3.5" />} error={showError("area")}>
-            <input type="number" min={100} placeholder="e.g. 1200" className={fieldClass(!!showError("area"), baseInput)} value={form.area} onChange={(e) => update("area", e.target.value)} onBlur={() => blur("area")} />
-          </Field>
+        {/* Progress indicator */}
+        <div className="space-y-1.5">
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>Form completion</span>
+            <span>{filledCount}/{totalFields} fields</span>
+          </div>
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+            <div
+              className="h-full bg-primary/70 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${(filledCount / totalFields) * 100}%` }}
+            />
+          </div>
         </div>
 
-        {/* Row 2 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <Field label="Bedrooms" icon={<BedDouble className="w-3.5 h-3.5" />} error={showError("bedrooms")}>
-            <select className={fieldClass(!!showError("bedrooms"), baseSelect)} value={form.bedrooms} onChange={(e) => update("bedrooms", e.target.value)} onBlur={() => blur("bedrooms")}>
-              <option value="" disabled>Select</option>
-              {bedroomOptions.map((b) => <option key={b} value={b}>{b}</option>)}
-            </select>
-          </Field>
-          <Field label="Bathrooms" icon={<Bath className="w-3.5 h-3.5" />} error={showError("bathrooms")}>
-            <select className={fieldClass(!!showError("bathrooms"), baseSelect)} value={form.bathrooms} onChange={(e) => update("bathrooms", e.target.value)} onBlur={() => blur("bathrooms")}>
-              <option value="" disabled>Select</option>
-              {bathroomOptions.map((b) => <option key={b} value={b}>{b}</option>)}
-            </select>
-          </Field>
-        </div>
+        {fieldGroups.map((group, gi) => (
+          <fieldset key={group.title} className="space-y-4">
+            <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {group.title}
+            </legend>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {group.fields.map((key, fi) => {
+                const isLast = group.fields.length % 2 !== 0 && fi === group.fields.length - 1;
+                const wrapClass = isLast ? "sm:col-span-2" : "";
 
-        {/* Row 3 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <Field label="Parking" icon={<Car className="w-3.5 h-3.5" />} error={showError("parking")}>
-            <select className={fieldClass(!!showError("parking"), baseSelect)} value={form.parking} onChange={(e) => update("parking", e.target.value)} onBlur={() => blur("parking")}>
-              <option value="" disabled>Select</option>
-              {parkingOptions.map((p) => <option key={p} value={p}>{p}</option>)}
-            </select>
-          </Field>
-          <Field label="Furnishing" icon={<Sofa className="w-3.5 h-3.5" />} error={showError("furnishing")}>
-            <select className={fieldClass(!!showError("furnishing"), baseSelect)} value={form.furnishing} onChange={(e) => update("furnishing", e.target.value)} onBlur={() => blur("furnishing")}>
-              <option value="" disabled>Select</option>
-              {furnishingOptions.map((f) => <option key={f} value={f}>{f}</option>)}
-            </select>
-          </Field>
-        </div>
+                if (key === "area") {
+                  return (
+                    <div key={key} className={wrapClass}>
+                      <Field label={fieldLabels[key]} icon={iconMap[key]} error={showError(key)} helper={fieldHelpers[key]}>
+                        <InputWrapper icon={iconMap[key]}>
+                          <input
+                            type="number"
+                            min={100}
+                            placeholder="e.g. 1200"
+                            className={fieldClass(!!showError(key), baseInput)}
+                            value={form[key]}
+                            onChange={(e) => update(key, e.target.value)}
+                            onBlur={() => blur(key)}
+                          />
+                        </InputWrapper>
+                      </Field>
+                    </div>
+                  );
+                }
 
-        {/* Property Type — full width */}
-        <Field label="Property Type" icon={<Building2 className="w-3.5 h-3.5" />} error={showError("propertyType")}>
-          <select className={fieldClass(!!showError("propertyType"), baseSelect)} value={form.propertyType} onChange={(e) => update("propertyType", e.target.value)} onBlur={() => blur("propertyType")}>
-            <option value="" disabled>Select</option>
-            {propertyTypes.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-        </Field>
+                const optionsMap: Record<string, string[]> = {
+                  location: cities,
+                  bedrooms: bedroomOptions,
+                  bathrooms: bathroomOptions,
+                  parking: parkingOptions,
+                  furnishing: furnishingOptions,
+                  propertyType: propertyTypes,
+                };
+
+                const placeholderMap: Record<string, string> = {
+                  location: "Select city…",
+                  bedrooms: "Select BHK…",
+                  bathrooms: "Select count…",
+                  parking: "Has parking?",
+                  furnishing: "Select status…",
+                  propertyType: "Select type…",
+                };
+
+                return (
+                  <div key={key} className={wrapClass}>
+                    <Field label={fieldLabels[key]} icon={iconMap[key]} error={showError(key)} helper={fieldHelpers[key]}>
+                      {renderSelect(key, optionsMap[key], placeholderMap[key])}
+                    </Field>
+                  </div>
+                );
+              })}
+            </div>
+            {gi < fieldGroups.length - 1 && (
+              <div className="border-t border-border/30" />
+            )}
+          </fieldset>
+        ))}
 
         {apiError && (
           <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/5 rounded-lg px-4 py-3 animate-slide-up">
-            <span className="w-1.5 h-1.5 rounded-full bg-destructive shrink-0" />
+            <AlertCircle className="w-4 h-4 shrink-0" />
             {apiError}
           </div>
         )}
