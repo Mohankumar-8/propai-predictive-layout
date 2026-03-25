@@ -8,15 +8,15 @@ interface SectionHeaderProps {
 }
 
 const SectionHeader = ({ title, subtitle, className, align = "center" }: SectionHeaderProps) => (
-  <div className={cn("mb-10 sm:mb-14", align === "center" && "text-center", className)}>
-    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground text-balance opacity-0 animate-fade-up">
+  <div className={cn("mb-12 sm:mb-16", align === "center" && "text-center", className)}>
+    <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground text-balance opacity-0 animate-fade-up">
       {title}
     </h2>
     {subtitle && (
       <p
         className={cn(
-          "mt-3 sm:mt-4 text-muted-foreground text-base sm:text-lg opacity-0 animate-fade-up",
-          align === "center" && "max-w-2xl mx-auto",
+          "mt-4 sm:mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed opacity-0 animate-fade-up",
+          align === "center" && "max-w-xl mx-auto",
         )}
         style={{ animationDelay: "80ms" }}
       >

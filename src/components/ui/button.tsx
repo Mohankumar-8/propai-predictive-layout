@@ -9,13 +9,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground rounded-lg shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5",
-        destructive: "bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90",
-        outline: "border border-input bg-background rounded-lg hover:bg-muted hover:text-foreground",
-        secondary: "bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80",
-        ghost: "rounded-lg hover:bg-muted hover:text-foreground",
+        default: "bg-primary text-primary-foreground rounded-xl shadow-md shadow-primary/15 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5",
+        destructive: "bg-destructive text-destructive-foreground rounded-xl hover:bg-destructive/90",
+        outline: "border border-input bg-background rounded-xl hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground rounded-xl hover:bg-secondary/80",
+        ghost: "rounded-xl hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        hero: "bg-primary text-primary-foreground rounded-full shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/35 hover:-translate-y-0.5 text-base",
+        hero: "bg-primary text-primary-foreground rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 text-base font-semibold",
       },
       size: {
         default: "h-10 px-5 py-2",
