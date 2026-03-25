@@ -15,8 +15,9 @@ const Index = () => {
       <Features />
 
       {/* CTA Section */}
-      <Section spacing="lg">
-        <Container className="text-center">
+      <Section spacing="lg" className="relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_100%,hsl(var(--primary)/0.06),transparent)] pointer-events-none" />
+        <Container className="relative text-center">
           <SectionHeader
             title="Ready to know your property's worth?"
             subtitle="Get a data-driven estimate in under 30 seconds. No signup required."
