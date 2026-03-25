@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Loader2,
@@ -10,8 +10,11 @@ import {
   Sofa,
   Building2,
   AlertCircle,
+  RefreshCw,
+  WifiOff,
 } from "lucide-react";
 import ResultCard from "@/components/ResultCard";
+import EmptyState from "@/components/EmptyState";
 
 const cities = [
   "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai",
@@ -53,6 +56,18 @@ const fieldHelpers: Partial<Record<FormKey, string>> = {
   propertyType: "Type of residential property",
 };
 
+const MAX_AREA = 100000;
+const MIN_AREA = 100;
+
+function sanitizeArea(value: string): string {
+  // Strip non-numeric chars except decimal
+  const cleaned = value.replace(/[^0-9.]/g, "");
+  // Prevent multiple decimals
+  const parts = cleaned.split(".");
+  if (parts.length > 2) return parts[0] + "." + parts.slice(1).join("");
+  return cleaned;
+}
+
 function validate(form: typeof initialForm): Partial<Record<FormKey, string>> {
   const errors: Partial<Record<FormKey, string>> = {};
   for (const key of Object.keys(form) as FormKey[]) {
@@ -60,8 +75,13 @@ function validate(form: typeof initialForm): Partial<Record<FormKey, string>> {
       errors[key] = `${fieldLabels[key]} is required`;
     }
   }
-  if (form.area.trim() && Number(form.area) < 100) {
-    errors.area = "Area must be at least 100 sq. ft.";
+  const areaNum = Number(form.area);
+  if (form.area.trim()) {
+    if (isNaN(areaNum) || areaNum < MIN_AREA) {
+      errors.area = `Area must be at least ${MIN_AREA} sq. ft.`;
+    } else if (areaNum > MAX_AREA) {
+      errors.area = `Area cannot exceed ${MAX_AREA.toLocaleString()} sq. ft.`;
+    }
   }
   return errors;
 }
@@ -81,9 +101,9 @@ const Field = ({ label, icon, error, helper, children }: FieldProps) => (
       {label}
     </label>
     {children}
-    <div className="min-h-[1.25rem]">
+    <div className="min-h-[1.25rem] overflow-hidden">
       {error ? (
-        <p className="flex items-center gap-1 text-xs text-destructive animate-slide-up">
+        <p className="flex items-center gap-1 text-xs text-destructive animate-slide-up" role="alert">
           <AlertCircle className="w-3 h-3 shrink-0" />
           {error}
         </p>
@@ -95,10 +115,10 @@ const Field = ({ label, icon, error, helper, children }: FieldProps) => (
 );
 
 const baseSelect =
-  "w-full h-11 rounded-lg border bg-background pl-10 pr-4 text-sm text-foreground focus:outline-none focus:ring-2 focus:shadow-sm transition-all duration-200 ease-out appearance-none cursor-pointer hover:shadow-sm hover:border-primary/20";
+  "w-full h-11 rounded-xl border bg-background pl-10 pr-4 text-sm text-foreground focus:outline-none focus:ring-2 focus:shadow-sm transition-all duration-200 ease-out appearance-none cursor-pointer hover:shadow-sm hover:border-primary/20";
 
 const baseInput =
-  "w-full h-11 rounded-lg border bg-background pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:shadow-sm transition-all duration-200 ease-out hover:shadow-sm hover:border-primary/20";
+  "w-full h-11 rounded-xl border bg-background pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:shadow-sm transition-all duration-200 ease-out hover:shadow-sm hover:border-primary/20";
 
 function fieldClass(hasError: boolean, base: string) {
   return `${base} ${
@@ -141,6 +161,8 @@ const PredictionForm = () => {
   const [form, setForm] = useState(initialForm);
   const [touched, setTouched] = useState<Partial<Record<FormKey, boolean>>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [hasAttempted, setHasAttempted] = useState(false);
 
   const errors = validate(form);
   const isValid = Object.keys(errors).length === 0;
@@ -148,11 +170,72 @@ const PredictionForm = () => {
   const showError = (key: FormKey) =>
     (touched[key] || submitted) ? errors[key] : undefined;
 
-  const update = (key: FormKey, value: string) =>
+  const update = (key: FormKey, value: string) => {
+    // Sanitize area input
+    if (key === "area") {
+      value = sanitizeArea(value);
+    }
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
   const blur = (key: FormKey) =>
     setTouched((prev) => ({ ...prev, [key]: true }));
+
+  const fetchPrediction = useCallback(async (formData: typeof initialForm, attempt = 0): Promise<PredictionResult> => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+    try {
+      const res = await fetch("http://localhost:5000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        const statusText = res.status >= 500
+          ? "Server error — please try again in a moment"
+          : res.status === 429
+            ? "Too many requests — please wait a moment"
+            : `Request failed (${res.status})`;
+        throw new Error(statusText);
+      }
+
+      const data = await res.json();
+
+      // Validate response shape
+      if (
+        typeof data.predicted_price !== "number" ||
+        !Array.isArray(data.price_range) ||
+        data.price_range.length !== 2
+      ) {
+        throw new Error("Invalid response from server");
+      }
+
+      return data as PredictionResult;
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+
+      if (err.name === "AbortError") {
+        throw new Error("Request timed out — please check your connection and try again");
+      }
+
+      // Auto-retry once on network errors
+      if (attempt < 1 && (err.message === "Failed to fetch" || err.name === "TypeError")) {
+        await new Promise((r) => setTimeout(r, 1500));
+        return fetchPrediction(formData, attempt + 1);
+      }
+
+      if (err.message === "Failed to fetch" || err.name === "TypeError") {
+        throw new Error("Unable to reach the server — please check your connection");
+      }
+
+      throw err;
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,21 +245,36 @@ const PredictionForm = () => {
     setLoading(true);
     setApiError(null);
     setResult(null);
+    setHasAttempted(true);
 
     try {
-      const res = await fetch("http://localhost:5000/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) throw new Error(`Server responded with ${res.status}`);
-      const data: PredictionResult = await res.json();
+      const data = await fetchPrediction(form);
       setResult(data);
+      setRetryCount(0);
     } catch (err: any) {
       setApiError(err.message || "Failed to get prediction. Please try again.");
+      setRetryCount((c) => c + 1);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRetry = () => {
+    if (!isValid) return;
+    setApiError(null);
+    setLoading(true);
+    setResult(null);
+
+    fetchPrediction(form)
+      .then((data) => {
+        setResult(data);
+        setRetryCount(0);
+      })
+      .catch((err: any) => {
+        setApiError(err.message || "Still unable to connect. Please try again later.");
+        setRetryCount((c) => c + 1);
+      })
+      .finally(() => setLoading(false));
   };
 
   const iconMap: Record<FormKey, React.ReactNode> = {
@@ -243,13 +341,21 @@ const PredictionForm = () => {
                       <Field label={fieldLabels[key]} icon={iconMap[key]} error={showError(key)} helper={fieldHelpers[key]}>
                         <InputWrapper icon={iconMap[key]}>
                           <input
-                            type="number"
-                            min={100}
+                            type="text"
+                            inputMode="numeric"
+                            min={MIN_AREA}
+                            max={MAX_AREA}
                             placeholder="e.g. 1200"
                             className={fieldClass(!!showError(key), baseInput)}
                             value={form[key]}
                             onChange={(e) => update(key, e.target.value)}
                             onBlur={() => blur(key)}
+                            onKeyDown={(e) => {
+                              // Prevent e, E, +, - in area input
+                              if (["e", "E", "+", "-"].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
                           />
                         </InputWrapper>
                       </Field>
@@ -290,10 +396,33 @@ const PredictionForm = () => {
           </fieldset>
         ))}
 
+        {/* API Error with retry */}
         {apiError && (
-          <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/5 rounded-lg px-4 py-3 animate-slide-up">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            {apiError}
+          <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-4 space-y-3 animate-scale-in" role="alert">
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-xl bg-destructive/10 flex items-center justify-center shrink-0">
+                <WifiOff className="w-4 h-4 text-destructive" />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <p className="text-sm font-medium text-foreground">Prediction failed</p>
+                <p className="text-xs text-muted-foreground">{apiError}</p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleRetry}
+              disabled={loading}
+              className="w-full gap-2"
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <RefreshCw className="w-4 h-4" />
+              )}
+              {retryCount > 2 ? "Try one more time" : "Retry prediction"}
+            </Button>
           </div>
         )}
 
@@ -309,14 +438,22 @@ const PredictionForm = () => {
         </Button>
       </form>
 
-      {result && (
+      {/* Results or empty state */}
+      {result ? (
         <ResultCard
           estimatedPrice={result.predicted_price}
           priceRangeLow={result.price_range[0]}
           priceRangeHigh={result.price_range[1]}
           area={Number(form.area) || 1}
         />
-      )}
+      ) : hasAttempted && !loading && !apiError ? (
+        <EmptyState
+          title="No results available"
+          description="The prediction didn't return results. Try adjusting your inputs and submit again."
+        />
+      ) : !hasAttempted ? (
+        <EmptyState />
+      ) : null}
     </div>
   );
 };
